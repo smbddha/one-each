@@ -1,0 +1,13 @@
+<% layout('./main-layout') %>
+
+<form method="POST" action="/submit-message" id="msgform">
+  <!-- <input type="text" name="message" maxlength="255" /> -->
+  <label for="msg">enter message below:</label>
+  </br>
+  <textarea id="msg" name="message" form="msgform" placeholder="enter message here ..." maxlength=255 cols=80 rows=5 autofocus required>
+
+  </textarea>
+  </br>
+  </br>
+  <input type="submit" value="post message" />
+</form>

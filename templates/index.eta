@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head></head>
-  <body>
+<% layout('./main-layout') %>
+
+<div id="message-content">
     <%~ it.message %>
-  </body>
-</html>
+</div>
