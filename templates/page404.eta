@@ -1,5 +1,5 @@
 <% layout('./main-layout') %>
 
 <div>
-  What are you looking for?
+  404 - What are you looking for?
 </div>

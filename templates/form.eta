@@ -1,8 +1,8 @@
 <% layout('./main-layout') %>
 
-<form method="POST" action="/submit-message" id="msgform">
+<form method="POST" action="/submit-message/day" id="msgform">
   <!-- <input type="text" name="message" maxlength="255" /> -->
-  <label for="msg">enter message below:</label>
+  <label for="msg">Your are the first! Leave a message for all who follow:</label>
   </br>
   <textarea id="msg" name="message" form="msgform" placeholder="enter message here ..." maxlength=255 cols=80 rows=5 autofocus required>
 

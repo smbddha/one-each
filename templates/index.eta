@@ -1,5 +1,49 @@
 <% layout('./main-layout') %>
 
-<div id="message-content">
-    <%~ it.message %>
+<div class="messages-container">
+	<% it.data.messages.forEach(function(msg) { %>
+	<div class="message-content">
+		<div class="msg-row">
+			<div class="label">
+				<%= msg.label %>
+			</div>
+			<div class="" id="editmessage">
+				editable - <img id="<%= msg.label %>EditIcon"src="/static/edit.svg" alt="edit" height="14px" width="14px" /> 
+			</div>
+		</div>
+		<div class="msg-row">
+			<% if (msg.txt) { %>
+				<%= msg.text %>
+			<% } else { %>
+				you are the first, leave your message.
+			<% } %>
+		</div>
+		<div class="msg-row hidden" id="<%= msg.label %>Edit">
+			<form method="POST" action="/submit-message/<%= msg.label %>" id="msgform">
+				<!-- <input type="text" name="message" maxlength="255" /> -->
+				<label for="msg">Your are the first! Leave a message for all who follow:</label>
+				</br>
+				<textarea id="<%= msg.label %>Input" name="<%= msg.label %>Input" form="<%= msg.label %>Input" placeholder="enter message here ..." maxlength=255 cols=80 rows=5 autofocus required></textarea>
+				</br>
+				</br>
+				<input type="submit" value="post message" />
+			</form>
+		</div>
+		<div class="msg-row">
+			<% if (msg.time) { %>
+				message left - <%= msg.time %>
+			<% } else { %>
+				you are the first
+			<% } %>
+		</div>
+	</div>
+	<% }) %>
 </div>
+
+<!-- <div id="message-content">
+		 <% if (it.msg_day) { %>
+		 <%~ it.msg_day %>
+		 <% } else { %>
+		 no message found
+		 <% } %>
+		 </div> -->
