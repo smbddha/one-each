@@ -54,14 +54,16 @@
 	  padding: 6px 12px;
       }
 
-      .hidden {
-	  display: none;
-      }
+      /* .hidden { */
+      /* 	  display: none; */
+      /* } */
 
       .msg-row {
 	  display: flex;
 	  flex-direction: row;
 	  justify-content: space-between;
+
+	  flex: 1;
 
 	  margin-bottom: 6px;
 	  margin-top: 6px;
@@ -97,20 +99,38 @@
 	  width: 400px;
 	  border-bottom: 2px solid gray;
       }
+
+      .es-message {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  z-index: 5;
+
+	  padding: 6px 16px;
+	  /* border: 2px solid black; */
+	  border-bottom: 2px solid black;
+      }
+      .es-message.hidden {
+	  transform: translateY(-50px);
+	  transition: transform 1s;
+      }
+
+      .error-message {
+	  /* background: red; */
+      }
+
+      .success-message {
+	  /* background: green; */
+      }
     </style>
     <title>one each</title>
 
     <script>
-      function hide(el) {
-	el.classList.add('hidden');
-      }
-
-      function showId(id) {
-	document.getElementById(id).classList.remove('hidden');
-      }
     </script>
   </head>
   <body class="container">
+    <div id="es-message" class="es-message hidden"></div>
     <div class="main-container">
       <div class="header-container">
 	<div></div>
@@ -136,8 +156,48 @@
     </div>
 
     <script>
+      function hide(el) {
+	el.classList.add('hidden');
+      }
+
+      function hideId(id) {
+	document.getElementById(id).classList.add('hidden');
+      }
+
+      function showId(id) {
+	document.getElementById(id).classList.remove('hidden');
+      }
+
       window.onload = function () {
 	console.log('loaded');
+
+	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+
+	const s = urlParams.get('success');
+	const e = urlParams.get('error');
+
+	let m = document.getElementById('es-message');
+	if (m) {
+	  if (s) {
+	    m.classList.add('success-message');
+	    m.innerHTML = `success: ${s} message posted !`;
+	  }
+
+	  if (e) {
+	    m.classList.add('error-message');
+	    m.innerHTML = `error: unable to post ${e} message !`;
+	  }
+
+	  if ((s || e)) {
+	    m.classList.remove('hidden');
+
+	    setTimeout(function () {
+	      m.classList.add('hidden');
+	      window.history.pushState({}, document.title, window.location.pathname);
+	    }, 3000);
+	  }  
+	}
       }
       
     </script>

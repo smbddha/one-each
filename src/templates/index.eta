@@ -8,10 +8,12 @@
 				<%= msg.label %>
 			</div>
 			<div class="" id="editmessage">
+				<% if (msg.editable) { %>
 				<img id="<%= msg.label %>EditIcon"src="/static/edit.svg" onclick="showId('<%= msg.label %>Edit')" alt="edit" height="14px" width="14px" /> 
+				<% } %>
 			</div>
 		</div>
-		<div class="msg-row">
+		<div class="msg-row" id="<%= msg.label %>Text">
 			<% if (msg.text) { %>
 				<%= msg.text %>
 			<% } else { %>
@@ -26,16 +28,22 @@
 				<textarea id="message" name="message" style="width: 100%; max-width: 100%;" form="<%= msg.label %>form" placeholder="enter message here ..." maxlength=99 autofocus required></textarea>
 				</br>
 				</br>
+				<input type="button" value="cancel" onclick="hideId('<%= msg.label %>Edit')" />
 				<input type="submit" value="post message" />
 			</form>
 		</div>
 		<div class="msg-row small-text light-text">
 			<div>
 				<% if (msg.time) { %>
-						posted - <%= msg.time.toISOString() %> - editable
+						posted - <%= msg.time.toISOString() %>
 				<% } else { %>
 						you are the first
 				<% } %>
+
+				<% if (msg.editable) { %>
+						- editable
+				<% } %>
+
 			</div>
 		</div>
 	</div>
