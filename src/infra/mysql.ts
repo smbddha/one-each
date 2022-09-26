@@ -2,9 +2,13 @@ import dotenv from "dotenv";
 import mysql from "mysql";
 import util from "util";
 
-import { Failure, Success, SuccessOrFailure } from "utils";
-import { IMessagesRepo } from "domain/repo";
-import { Messages, GetMessagesArgs, InsertMessageArgs } from "domain/types";
+import { Failure, Success, SuccessOrFailure } from "src/utils";
+import {
+  IMessagesRepo,
+  Messages,
+  GetMessagesArgs,
+  InsertMessageArgs,
+} from "src/domain";
 
 const GET_SQL = "SELECT * FROM messages WHERE ip = ?";
 const INSERT_SQL =
@@ -49,7 +53,7 @@ export const MessagesMySQLRepo = (): IMessagesRepo => {
       const get = util.promisify(conn.query);
 
       console.log("HERE");
-      const x = await get({ sqljk });
+      const x = await get({ sql: GET_SQL, values: [ip] });
       console.log(x);
 
       // if (err) {

@@ -11,14 +11,15 @@ export type PPair = {
 };
 
 export type Message = {
-		period: PeriodsEnum,
-		text: String
-}
+  period: PeriodsEnum;
+  text: String;
+  time: Date;
+};
 
 export type Messages = {
-		ip: Number,
-		messages: Message[]
-}
+  ip: Number;
+  messages: Message[];
+};
 
 export const periodMap: Record<string, PPair> = {
   "8h": { p: PeriodsEnum.eight_hours, l: 1000 * 60 * 60 * 8 },
@@ -29,11 +30,10 @@ export const periodMap: Record<string, PPair> = {
 };
 
 export type InsertMessageArgs = {
-		ip: Number,
-		message: Message,
-		time: Date
-}
+  ip: Number;
+  message: Message;
+};
 
 export type GetMessagesArgs = {
-		ip: Number
-}
+  ip: Number;
+};

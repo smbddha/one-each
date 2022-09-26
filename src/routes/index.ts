@@ -2,11 +2,14 @@ import express from "express";
 
 import { ip_to_int } from "../utils";
 // TODO fix resolution to just domain
-import { IMessagesRepo } from "domain/repo";
-import { MessagesMySQLRepo } from "infra/mysql";
+import { IMessagesRepo } from "src/domain";
+// import { MessagesMySQLRepo } from "src/infra";
+// import { MessagesMySQLRepo } from "src/infra";
+import { MessagesSQLiteRepo } from "src/infra";
 
 const debug = require("debug")("SERVER");
-const db: IMessagesRepo = MessagesMySQLRepo();
+// const db: IMessagesRepo = MessagesMySQLRepo();
+const db: IMessagesRepo = MessagesSQLiteRepo();
 
 const router = express.Router();
 

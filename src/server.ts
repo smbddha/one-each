@@ -17,12 +17,12 @@ function mysqlDate(date = new Date()) {
   return date.toISOString().slice(0, 19).replace("T", " ");
 }
 
-const conn = mysql.createConnection({
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-});
+// const conn = mysql.createConnection({
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASS,
+// });
 
 Eta.configure({
   plugins: [],
@@ -63,17 +63,15 @@ const PORT = process.env.PORT || 3000;
 
 const msg_query = "SELECT * FROM messages WHERE ip = ?";
 const get_msg = (nip: number, callback: (res: any) => void) => {
-  conn.query(
-    { sql: msg_query, values: [nip] },
-    function (err: any, results: any, fields: any) {
-      if (err) throw err;
-
-      debug(results);
-
-      callback(results);
-      return results;
-    }
-  );
+  // conn.query(
+  //   { sql: msg_query, values: [nip] },
+  //   function (err: any, results: any, fields: any) {
+  //     if (err) throw err;
+  //     debug(results);
+  //     callback(results);
+  //     return results;
+  //   }
+  // );
 };
 
 const msg_insert =
@@ -92,28 +90,28 @@ const insert_msg = async (
   // transform for mysql
   let t = mysqlDate();
 
-  conn.query(
-    {
-      sql: msg_insert,
-      values: [
-        period_column,
-        period_time_column,
-        nip,
-        msg,
-        t,
-        period_column,
-        msg,
-        period_time_column,
-        t,
-      ],
-    },
-    function (err: any, results: any, fields: any) {
-      if (err) throw err;
+  // conn.query(
+  //   {
+  //     sql: msg_insert,
+  //     values: [
+  //       period_column,
+  //       period_time_column,
+  //       nip,
+  //       msg,
+  //       t,
+  //       period_column,
+  //       msg,
+  //       period_time_column,
+  //       t,
+  //     ],
+  //   },
+  //   function (err: any, results: any, fields: any) {
+  //     if (err) throw err;
 
-      // return results;
-      cb();
-    }
-  );
+  //     // return results;
+  //     cb();
+  //   }
+  // );
 };
 
 const app = express();
