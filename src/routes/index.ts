@@ -1,15 +1,16 @@
 import express from "express";
+import { body, validationResult } from "express-validator";
 
-import { ip_to_int } from "../utils";
-// TODO fix resolution to just domain
-import { IMessagesRepo } from "src/domain";
-// import { MessagesMySQLRepo } from "src/infra";
+import { ip_to_int, SuccessOrFailure } from "../utils";
+import { IMessagesRepo, Messages, periodMap } from "src/domain";
+
 // import { MessagesMySQLRepo } from "src/infra";
 import { MessagesSQLiteRepo } from "src/infra";
+import { insertMessage as _insertMessage } from "src/useCases";
 
-const debug = require("debug")("SERVER");
 // const db: IMessagesRepo = MessagesMySQLRepo();
 const db: IMessagesRepo = MessagesSQLiteRepo();
+const insertMessage = _insertMessage(db);
 
 const router = express.Router();
 
@@ -23,123 +24,76 @@ router.get("/", async (req: express.Request, res: express.Response) => {
   if (cip !== undefined) {
     //const nip = ip_to_int(cip.split(":").pop());
     const ipv4_ip = cip.split(":").pop();
-
     const nip = ip_to_int(ipv4_ip!);
 
     const sof = await db.getMessages({ ip: nip });
 
     // handle unfound messages
+
+    let messages: Messages = { ip: nip, messages: [] };
     if (!sof.ok) {
       console.log("ERROR", sof);
+    } else {
+      messages = sof.val;
     }
 
     console.log(sof);
 
-    // get_msg(nip, (results) => {
-    //   let messages: any = [];
-
-    //   let r = {
-    //     ip: nip,
-    //     messages: messages,
-    //   };
-
-    //   // TODO transform time to time lj
-
-    //   for (let p in PeriodsEnum) {
-    //     let a = PeriodsEnum[p as keyof typeof PeriodsEnum];
-    //     // debug(p, a);
-
-    //     console.log(
-    //       results[0][`${a}_time`],
-    //       a,
-    //       isOlderThanPeriod(a, results[0][`${a}_time`])
-    //     );
-
-    //     messages.push({
-    //       label: a,
-    //       text: results[0][`${a}_msg`] ?? "",
-    //       time: results[0][`${a}_time`] ?? null,
-    //       editable: results[0][`${a}_time`]
-    //         ? isOlderThanPeriod(a, results[0][`${a}_time`])
-    //         : true,
-    //     });
-    //   }
-
-    //   r = {
-    //     ip: results.ip,
-    //     messages: messages,
-    //   };
-
-    //   res.render("index", {
-    //     data: r,
-    //     clientIp: cip,
-    //   });
-    // });
-
     res.render("index", {
-      data: {},
+      data: messages,
       clientIp: cip,
     });
   }
 });
 
-// router.post(
-//   "/submit-message/:period",
-//   body("message").isLength({ max: 255 }).escape(),
-//   (req: express.Request, res: express.Response) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ msg: "Invalid message" });
-//     }
+router.post(
+  "/submit-message/:period",
+  body("message").isLength({ max: 255 }).escape(),
+  async (req: express.Request, res: express.Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ msg: "Invalid message" });
+    }
 
-//     const message = req.body.message;
-//     const period = req.params.period;
+    const message = req.body.message;
+    const period = req.params.period;
 
-//     debug({ period });
+    // debug({ period });
 
-//     // TODO validate period here ...
-//     // or in insert message
+    // TODO validate period here ...
+    // or in insert message
+    let { p, l: _ } = periodMap[period];
+    if (!p) {
+      console.log("INVALID PERIOD");
 
-//     // let p: PeriodsEnum = ;
-//     let { p, l: _ } = periodMap[period];
-//     if (!p) {
-//       debug("INVALID PERIOD");
+      // TODO add error to redirect
+      return res.redirect("/");
+    }
 
-//       // add error to redirect
-//       return res.redirect("/");
-//     }
+    console.log({ p });
 
-//     debug({ p });
+    const cip = req?.clientIp;
+    if (cip !== undefined) {
+      const ipv4_ip = cip.split(":").pop();
+      const nip = ip_to_int(ipv4_ip!);
 
-//     const cip = req?.clientIp;
-//     if (cip !== undefined) {
-//       const ipv4_ip = cip.split(":").pop();
-//       const nip = ip_to_int(ipv4_ip!);
+      const sof: SuccessOrFailure<{}> = await insertMessage(
+        nip,
+        period,
+        message
+      );
 
-//       get_msg(nip, (results) => {
-//         if (results.length === 0) {
-//           // return error response
-//           return res.redirect("/");
-//         }
+      if (!sof.ok) {
+        return res.redirect(`/?error=${p}`);
+      }
 
-//         // TODO decide whether you want it to be not just
-//         // on the same day but after x amount of time has past
-//         let isValid = isOlderThanPeriod(period, results[0][`${period}_time`]);
+      return res.redirect(`/?success=${p}`);
+    }
 
-//         debug("AND THEN");
-
-//         if (isValid) {
-//           debug("inserting message");
-//           insert_msg(nip, p, message, () => {
-//             return res.redirect(`/?success=${p}`);
-//           });
-//         } else {
-//           debug("INVALID");
-//           return res.redirect(`/?error=${p}`);
-//         }
-//       });
-//     }
-//   }
-// );
+    // TODO decide whether you want it to be not just
+    // on the same day but after x amount of time has past
+    return res.redirect(`/asdfasdfsdf`);
+  }
+);
 
 export default router;

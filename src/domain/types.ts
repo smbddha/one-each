@@ -14,6 +14,8 @@ export type Message = {
   period: PeriodsEnum;
   text: String;
   time: Date;
+  label?: String;
+  editable?: Boolean;
 };
 
 export type Messages = {
@@ -24,9 +26,9 @@ export type Messages = {
 export const periodMap: Record<string, PPair> = {
   "8h": { p: PeriodsEnum.eight_hours, l: 1000 * 60 * 60 * 8 },
   "24h": { p: PeriodsEnum.day, l: 1000 * 60 * 60 * 24 },
-  "7d": { p: PeriodsEnum.eight_hours, l: 1000 * 60 * 60 * 24 * 7 },
-  "30d": { p: PeriodsEnum.eight_hours, l: 1000 * 60 * 60 * 24 * 30 },
-  "1y": { p: PeriodsEnum.eight_hours, l: 1000 * 60 * 60 * 24 * 365 },
+  "7d": { p: PeriodsEnum.week, l: 1000 * 60 * 60 * 24 * 7 },
+  "30d": { p: PeriodsEnum.month, l: 1000 * 60 * 60 * 24 * 30 },
+  "1y": { p: PeriodsEnum.year, l: 1000 * 60 * 60 * 24 * 365 },
 };
 
 export type InsertMessageArgs = {
