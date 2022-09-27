@@ -32,7 +32,7 @@ CREATE TABLE messages (
     time_30d DATETIME NULL DEFAULT NULL,
     msg_1y TEXT,
     time_1y DATETIME NULL DEFAULT NULL,
-    created_at DATETIME DEFAULT CURRENT_DATETIME,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(ip)
 );
 `;
@@ -44,8 +44,7 @@ const GET_SQL = "SELECT * FROM messages WHERE ip = $ip";
 export const MessagesSQLiteRepo = (): IMessagesRepo => {
   const _db: Database = new sqlite3.Database(":memory:");
   const db: any = pify(_db, { excludeMain: true, multiArgs: true });
-
-  db.run(CREATE_TABLES_SQL);
+  db.run(CREATE_TABLES_SQL).catch((err: any) => console.log(err));
 
   return {
     async insertMessage(
@@ -58,13 +57,18 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
       try {
         let lmsg = `msg_${message.period}`;
         let ltime = `time_${message.period}`;
+        console.log(`
+						INSERT INTO messages (ip, ${lmsg}, ${ltime}) 
+						VALUES (:ip, :msg, :time) 
+						ON CONFLICT(ip) 
+						DO UPDATE SET ${lmsg}=:msg, ${ltime}=:time`);
 
         const [err, res] = await db.run(
           `
-						INSERT INTO messages (ip, ${lmsg}, ${ltime}) 
-						VALUES ($ip, $msg, $time) 
-						ON CONFLICT(ip) 
-						DO UPDATE SET ${lmsg}=:msg, ${ltime}=:time`,
+        		INSERT INTO messages (ip, ${lmsg}, ${ltime})
+        		VALUES ($ip, $msg, $time)
+        		ON CONFLICT(ip)
+        		DO UPDATE SET ${lmsg}=$msg, ${ltime}=$time`,
           {
             $ip: ip,
             $msg: message.text,
@@ -72,9 +76,27 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
           }
         );
 
+        // _db.run(
+        //   `
+        // 		INSERT INTO messages (ip, ${lmsg}, ${ltime})
+        // 		VALUES ($ip, $msg, $time)
+        // 		ON CONFLICT(ip)
+        // 		DO UPDATE SET ${lmsg}=$msg, ${ltime}=$time`,
+        //   {
+        //     $ip: ip,
+        //     $msg: message.text,
+        //     $time: message.time,
+        //   },
+        //   (err: any, res: any) => {
+        //     console.log("BIGGGGGGG");
+        //     console.log(err, res);
+        //   }
+        // );
+
         console.log(err, res);
 
         if (err) {
+          console.log(err);
           return Failure(
             new Error("error inserting messages")
           ) as SuccessOrFailure<{}>;
@@ -111,7 +133,7 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
           if (res !== undefined) {
             console.log("HERE");
             text = res[`msg_${k}`] ?? null;
-            time = res[`time_${k}`] ?? null;
+            time = res[`time_${k}`] ? new Date(res[`time_${k}`]) : null;
             console.log(text, time, res[`${k}_time`], res[`${k}_msg`]);
           }
 
@@ -120,12 +142,19 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
             period: v.p,
             text: text ?? "",
             time: time,
-            editable: !text ? true : isOlderThanPeriod(v.p, time),
+            editable: !text ? true : isOlderThanPeriod(v.p, time ?? new Date()),
           } as Message;
         }),
       };
 
       return Success(messages) as SuccessOrFailure<Messages>;
+      // } catch (e) {
+      //   console.log(e);
+
+      //   return Failure(
+      //     new Error("error inserting messages")
+      //   ) as SuccessOrFailure<Messages>;
+      // }
     },
   };
 };

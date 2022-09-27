@@ -42,6 +42,45 @@ export const MessagesMySQLRepo = (): IMessagesRepo => {
           new Error("unable to get messages")
         ) as SuccessOrFailure<Messages>;
       }
+      // const msg_insert =
+      //   "INSERT INTO messages (ip, ??, ??) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE ??=?, ??=?";
+      // const insert_msg = async (
+      //   nip: number,
+      //   period: PeriodsEnum,
+      //   msg: string,
+      //   cb: () => void
+      // ) => {
+      //   // TODO use enum for period
+      //   let p: string = period as string;
+      //   let period_column = p + "_msg";
+      //   let period_time_column = p + "_time";
+
+      //   // transform for mysql
+      //   let t = mysqlDate();
+
+      //   // conn.query(
+      //   {
+      //     sql: msg_insert,
+      //     values: [
+      //       period_column,
+      //       period_time_column,
+      //       nip,
+      //       msg,
+      //       t,
+      //       period_column,
+      //       msg,
+      //       period_time_column,
+      //       t,
+      //     ],
+      //   },
+      //   function (err: any, results: any, fields: any) {
+      //     if (err) throw err;
+
+      //     // return results;
+      //     cb();
+      //   }
+      // );
+      //
 
       return Success(res) as SuccessOrFailure<Messages>;
     },

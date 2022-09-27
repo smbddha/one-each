@@ -22,8 +22,9 @@ export const insertMessage =
 
     const messages = sof.val;
     const periodMessage = messages.messages.find(
-      (v) => (v.period = message.period)
+      (v) => v.period === message.period
     );
+    console.log(periodMessage);
 
     // let isValid = isOlderThanPeriod(
     //   message.period,
