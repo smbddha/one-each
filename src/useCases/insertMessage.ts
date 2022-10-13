@@ -18,13 +18,12 @@ export const insertMessage =
       text: text,
       time: new Date(),
     };
-    console.log("GOT MESSAGES", sof.val);
 
     const messages = sof.val;
     const periodMessage = messages.messages.find(
       (v) => v.period === message.period
     );
-    console.log(periodMessage);
+    // console.log(periodMessage);
 
     // let isValid = isOlderThanPeriod(
     //   message.period,

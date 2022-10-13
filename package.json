@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_PATH=./ ts-node src/server.ts",
     "watch-dev": "NODE_PATH=./ nodemon --exec 'ts-node' src/server.ts",
-    "build": "tsc -p . --pretty",
+    "build": "tsc -p . --pretty && cp -r src/templates build/src/templates",
     "start": "NODE_PATH=build node build/src/server.js",
     "prod": "npm run build && npm run start"
   },

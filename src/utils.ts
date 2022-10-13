@@ -7,11 +7,7 @@ export const ip_to_int = (ip: string): number => {
 };
 
 export function isOlderThanPeriod(p: string, t1: Date, t2: Date = new Date()) {
-		console.log("ISOLDERTHAN",p, t1,t2)
   let { p: _, l } = periodMap[p];
-
-  //@ts-ignore
-  console.log(p, t2 - t1, l);
 
   //@ts-ignore
   return ((t2 - t1) as number) > l;

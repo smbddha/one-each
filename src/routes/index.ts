@@ -8,7 +8,7 @@ import { IMessagesRepo, Messages, periodMap } from "src/domain";
 import { MessagesSQLiteRepo } from "src/infra";
 import { insertMessage as _insertMessage } from "src/useCases";
 
-const debug = require("debug")("SERVER");
+// const debug = require("debug")("SERVER");
 
 // const db: IMessagesRepo = MessagesMySQLRepo();
 const db: IMessagesRepo = MessagesSQLiteRepo();
@@ -21,7 +21,8 @@ router.get("/about", (_, res: express.Response) => {
 });
 
 router.get("/", async (req: express.Request, res: express.Response) => {
-  debug("GET");
+		// console.log("GET")
+
   // TODO validate this
   const cip = req?.clientIp;
   if (cip !== undefined) {
@@ -41,15 +42,14 @@ router.get("/", async (req: express.Request, res: express.Response) => {
         messages = sof.val;
       }
 
-      console.log(sof);
-      console.log(messages);
+      // console.log(sof);
+      // console.log(messages);
 
       return res.render("index", {
         data: messages,
         clientIp: cip,
       });
     } catch (e) {
-      debug(e);
       return res.redirect(`/asdfasdfsdf`);
     }
   }
@@ -59,7 +59,6 @@ router.post(
   "/submit-message/:period",
   body("message").isLength({ max: 255 }).escape(),
   async (req: express.Request, res: express.Response) => {
-    debug("POST");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ msg: "Invalid message" });
@@ -67,8 +66,6 @@ router.post(
 
     const message = req.body.message;
     const period = req.params.period;
-
-    // debug({ period });
 
     // TODO validate period here ...
     // or in insert message
@@ -80,7 +77,7 @@ router.post(
       return res.redirect("/");
     }
 
-    console.log({ p });
+    // console.log({ p });
 
     const cip = req?.clientIp;
     if (cip !== undefined) {
@@ -102,7 +99,7 @@ router.post(
 
     // TODO decide whether you want it to be not just
     // on the same day but after x amount of time has past
-    console.log("couldnt getip");
+    // console.log("couldnt getip");
     return res.redirect(`/asdfasdfsdf`);
   }
 );

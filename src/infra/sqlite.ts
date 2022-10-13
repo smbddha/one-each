@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import pify from "pify";
 import { Database } from "sqlite3";
 
@@ -16,6 +17,8 @@ import {
   periodMap,
   PPair,
 } from "src/domain";
+
+dotenv.config();
 
 const sqlite3 = require("sqlite3").verbose();
 
@@ -42,9 +45,10 @@ const GET_SQL = "SELECT * FROM messages WHERE ip = $ip";
 
 // should the connect to db method be a part of the repo type ?
 export const MessagesSQLiteRepo = (): IMessagesRepo => {
-  const _db: Database = new sqlite3.Database(":memory:");
+  // console.log(process.env.DBFILE);
+  const _db: Database = new sqlite3.Database(process.env.DBFILE);
   const db: any = pify(_db, { excludeMain: true, multiArgs: true });
-  db.run(CREATE_TABLES_SQL).catch((err: any) => console.log(err));
+  // db.run(CREATE_TABLES_SQL).catch((err: any) => console.log(err));
 
   return {
     async insertMessage(
@@ -52,16 +56,11 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
     ): Promise<SuccessOrFailure<{}>> {
       const { ip, message } = args;
 
-      console.log("inserting", ip, message, `time_${message.period}`);
+      // console.log("inserting", ip, message, `time_${message.period}`);
 
       try {
         let lmsg = `msg_${message.period}`;
         let ltime = `time_${message.period}`;
-        console.log(`
-						INSERT INTO messages (ip, ${lmsg}, ${ltime}) 
-						VALUES (:ip, :msg, :time) 
-						ON CONFLICT(ip) 
-						DO UPDATE SET ${lmsg}=:msg, ${ltime}=:time`);
 
         const [err, res] = await db.run(
           `
@@ -76,24 +75,7 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
           }
         );
 
-        // _db.run(
-        //   `
-        // 		INSERT INTO messages (ip, ${lmsg}, ${ltime})
-        // 		VALUES ($ip, $msg, $time)
-        // 		ON CONFLICT(ip)
-        // 		DO UPDATE SET ${lmsg}=$msg, ${ltime}=$time`,
-        //   {
-        //     $ip: ip,
-        //     $msg: message.text,
-        //     $time: message.time,
-        //   },
-        //   (err: any, res: any) => {
-        //     console.log("BIGGGGGGG");
-        //     console.log(err, res);
-        //   }
-        // );
-
-        console.log(err, res);
+        // console.log(err, res);
 
         if (err) {
           console.log(err);
@@ -104,7 +86,7 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
 
         return Success({}) as SuccessOrFailure<{}>;
       } catch (e) {
-        console.log("ERROR", e);
+        // console.log("ERROR", e);
 
         return Failure(
           new Error("error inserting messages")
@@ -117,8 +99,8 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
       const { ip } = args;
 
       const [res, err] = await db.get(GET_SQL, { $ip: ip });
-      console.log("RES", res);
-      console.log("RES", res ? res["msg_8h"] : "NOPE");
+      // console.log("RES", res);
+      // console.log("RES", res ? res["msg_8h"] : "NOPE");
 
       // const msgs: [string, any][] = Object.entries(res ?? {});
 
@@ -131,10 +113,8 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
           let time = null;
 
           if (res !== undefined) {
-            console.log("HERE");
             text = res[`msg_${k}`] ?? null;
             time = res[`time_${k}`] ? new Date(res[`time_${k}`]) : null;
-            console.log(text, time, res[`${k}_time`], res[`${k}_msg`]);
           }
 
           return {
@@ -148,13 +128,6 @@ export const MessagesSQLiteRepo = (): IMessagesRepo => {
       };
 
       return Success(messages) as SuccessOrFailure<Messages>;
-      // } catch (e) {
-      //   console.log(e);
-
-      //   return Failure(
-      //     new Error("error inserting messages")
-      //   ) as SuccessOrFailure<Messages>;
-      // }
     },
   };
 };
