@@ -125,6 +125,7 @@
       }
     </style>
     <title>one each</title>
+    <link rel="icon" href="/static/logo.svg" type="image/x-icon">
 
     <script>
     </script>
@@ -135,7 +136,9 @@
       <div class="header-container">
 	<div></div>
 	<div class="logo-container">
+	  <a href="/#">
 	  <img src="/static/logo.svg" alt="logo" height="36px" width="36px"/>
+	  </a>
 	</div>
 	<div class="about-button">
 	  <a href="/about">??</a>

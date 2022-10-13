@@ -1,7 +1,7 @@
 <% layout('./main-layout') %>
 
-<div >
-  Each ip address gets one message.
+<div>
+     Every ipv4 address gets its own message board. Each message can only be posted once per period.
     </br>
     </br>
     <a href="#">Report ip.</a>
