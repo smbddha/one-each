@@ -5,9 +5,9 @@ WORKDIR /usr
 COPY package.json ./
 COPY tsconfig.json ./
 COPY ecosystem.config.js ./
-# COPY .env ./
+#COPY .env ./
 COPY src ./src
-# COPY public ./public 
+#COPY public ./public 
 RUN ls -a
 RUN npm install
 RUN npm run build
@@ -18,9 +18,9 @@ FROM node:18-alpine
 WORKDIR /usr
 COPY package.json ./
 COPY ecosystem.config.js ./
-# COPY .env ./
+COPY .env ./
 COPY public ./public 
-RUN npm install --only=production
+RUN npm install --only=production --omit-dev
 COPY --from=0 /usr/build .
 # COPY --from=0 /usr/public . 
 RUN ls -a
