@@ -9,9 +9,9 @@ let EDITABLE = false;
 
 dotenv.config();
 
-function mysqlDate(date = new Date()) {
-  return date.toISOString().slice(0, 19).replace("T", " ");
-}
+// function mysqlDate(date = new Date()) {
+//   return date.toISOString().slice(0, 19).replace("T", " ");
+// }
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -20,8 +20,7 @@ if (process.env.NODE_ENV === "development") {
   EDITABLE = true;
 }
 
-if (process.env.NODE_ENV === "production") {
-}
+if (process.env.NODE_ENV === "production") {}
 
 // ------------- ETA SETUP -----------------
 Eta.configure({

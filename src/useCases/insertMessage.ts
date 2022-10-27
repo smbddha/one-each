@@ -1,5 +1,5 @@
-import { IMessagesRepo, Message, periodMap, PeriodsEnum } from "src/domain";
-import { Failure, SuccessOrFailure, isOlderThanPeriod } from "src/utils";
+import { IMessagesRepo, Message, periodMap } from "src/domain";
+import { Failure, SuccessOrFailure } from "src/utils";
 
 export const insertMessage =
   (messagesRepo: IMessagesRepo) =>
@@ -23,12 +23,6 @@ export const insertMessage =
     const periodMessage = messages.messages.find(
       (v) => v.period === message.period
     );
-    // console.log(periodMessage);
-
-    // let isValid = isOlderThanPeriod(
-    //   message.period,
-    //   periodMessage?.time ?? new Date()
-    // );
 
     if (!periodMessage?.editable) {
       return Failure(

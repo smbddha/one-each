@@ -39,3 +39,19 @@ export type InsertMessageArgs = {
 export type GetMessagesArgs = {
   ip: Number;
 };
+
+/* ----- FLAGS ----- */
+/* for reporting ips */
+
+export type Flag = {
+		ip: Number;
+		createdAt: Date;
+}
+
+export type InsertFlagArgs = {
+		ip: Number;
+}
+
+export type RemoveFlagArgs = {
+		ip: Number;
+}

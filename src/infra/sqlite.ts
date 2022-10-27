@@ -40,14 +40,14 @@ CREATE TABLE messages (
 );
 `;
 
-const INSERT_SQL = `INSERT INTO messages (ip, :lmsg, :ltime) VALUES ($ip, $msg, $time) ON CONFLICT(ip) DO UPDATE SET :lmsg=$msg, :ltime=$time`;
+// const INSERT_SQL = `INSERT INTO messages (ip, :lmsg, :ltime) VALUES ($ip, $msg, $time) ON CONFLICT(ip) DO UPDATE SET :lmsg=$msg, :ltime=$time`;
 const GET_SQL = "SELECT * FROM messages WHERE ip = $ip";
 
 // should the connect to db method be a part of the repo type ?
-export const MessagesSQLiteRepo = (): IMessagesRepo => {
+export const MessagesSQLiteRepo = (sqlitedb: Database): IMessagesRepo => {
   // console.log(process.env.DBFILE);
-  const _db: Database = new sqlite3.Database(process.env.DBFILE);
-  const db: any = pify(_db, { excludeMain: true, multiArgs: true });
+  // const _db: Database = new sqlite3.Database(process.env.DBFILE);
+  const db: any = pify(sqlitedb, { excludeMain: true, multiArgs: true });
   // db.run(CREATE_TABLES_SQL).catch((err: any) => console.log(err));
 
   return {

@@ -11,7 +11,12 @@ import { insertMessage as _insertMessage } from "src/useCases";
 // const debug = require("debug")("SERVER");
 
 // const db: IMessagesRepo = MessagesMySQLRepo();
-const db: IMessagesRepo = MessagesSQLiteRepo();
+import { Database } from "sqlite3";
+
+const sqlite3 = require("sqlite3").verbose();
+const _db: Database = new sqlite3.Database(process.env.DBFILE);
+
+const db: IMessagesRepo = MessagesSQLiteRepo(_db);
 const insertMessage = _insertMessage(db);
 
 const router = express.Router();
@@ -21,7 +26,7 @@ router.get("/about", (_, res: express.Response) => {
 });
 
 router.get("/", async (req: express.Request, res: express.Response) => {
-		// console.log("GET")
+  // console.log("GET")
 
   // TODO validate this
   const cip = req?.clientIp;
@@ -101,6 +106,13 @@ router.post(
     // on the same day but after x amount of time has past
     // console.log("couldnt getip");
     return res.redirect(`/asdfasdfsdf`);
+  }
+);
+
+router.post(
+  "/report-ip",
+  async (req: express.Request, res: express.Response) => {
+    return res.redirect(`/about/?success=ok`);
   }
 );
 
