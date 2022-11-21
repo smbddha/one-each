@@ -7,7 +7,7 @@
 			<div class="msg-header">
 				<%= msg.label %>
 			</div>
-			<div class="" id="editmessage">
+			<div class="button" id="editmessage">
 				<% if (msg.editable) { %>
 				<img id="<%= msg.label %>EditIcon"src="/static/edit.svg" onclick="showId('<%= msg.label %>Edit')" alt="edit" height="14px" width="14px" /> 
 				<% } %>
@@ -28,7 +28,7 @@
 				<textarea id="message" name="message" style="width: 100%; max-width: 100%;" form="<%= msg.label %>form" placeholder="enter message here ..." maxlength=99 autofocus required></textarea>
 				</br>
 				</br>
-				<input type="button" value="cancel" onclick="hideId('<%= msg.label %>Edit')" />
+				<input type="button" class="button" value="cancel" onclick="hideId('<%= msg.label %>Edit')" />
 				<input type="submit" value="post message" />
 			</form>
 		</div>
